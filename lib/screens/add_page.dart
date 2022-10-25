@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import 'package:simple_forum/providers/forum_provider.dart';
+import '../cubits/forum/forum_cubit.dart';
 import '../models/article.dart';
+import 'home_page.dart';
 
 class AddPage extends StatelessWidget {
   const AddPage({Key? key}) : super(key: key);
@@ -160,14 +163,19 @@ class AddPage extends StatelessWidget {
                                         String tempTime =
                                         DateFormat('yyyy-MM-dd HH:mm')
                                             .format(DateTime.now());
-                                        context
-                                            .read<ForumProvider>()
+                                        BlocProvider.of<ForumCubit>(context)
                                             .addArticle(
                                           Article(tempTitle, tempContent,
-                                              tempTime, false),
+                                              tempTime),
                                         );
+                                        log(BlocProvider.of<ForumCubit>(context).state.toString());
                                         Navigator.pop(context);
-                                        Navigator.pop(context);
+                                        Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    HomePage()),
+                                                (route) => false);
                                       },
                                       child: Text('확인'),
                                     ),

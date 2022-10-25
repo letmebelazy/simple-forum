@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import 'package:simple_forum/providers/forum_provider.dart';
-
+import '../cubits/forum/forum_cubit.dart';
 import 'home_page.dart';
 
 class EditPage extends StatelessWidget {
@@ -29,7 +28,12 @@ class EditPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   TextFormField(
-                    initialValue: context.read<ForumProvider>().articles[context.read<ForumProvider>().currentIndex].title ?? '',
+                    initialValue: BlocProvider.of<ForumCubit>(context)
+                            .state
+                            .articles[BlocProvider.of<ForumCubit>(context)
+                                .state
+                                .currentIndex]
+                            .title,
                     onChanged: (value) {
                       tempTitle = value;
                     },
@@ -55,7 +59,12 @@ class EditPage extends StatelessWidget {
                       child: TextFormField(
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
-                        initialValue: context.read<ForumProvider>().articles[context.read<ForumProvider>().currentIndex].content,
+                        initialValue: BlocProvider.of<ForumCubit>(context)
+                            .state
+                            .articles[BlocProvider.of<ForumCubit>(context)
+                                .state
+                                .currentIndex]
+                            .content,
                         onChanged: (value) {
                           tempContent = value;
                         },
@@ -161,16 +170,39 @@ class EditPage extends StatelessWidget {
                                         String tempTime =
                                             DateFormat('yyyy-MM-dd HH:mm')
                                                 .format(DateTime.now());
-                                        context
-                                            .read<ForumProvider>()
-                                            .editTitle(context.read<ForumProvider>().currentIndex, tempTitle);
-                                        context
-                                            .read<ForumProvider>()
-                                            .editContent(context.read<ForumProvider>().currentIndex, tempContent);
-                                        context.read<ForumProvider>().toggleIsEdited(context.read<ForumProvider>().currentIndex);
-                                        context.read<ForumProvider>().setEditedAt(context.read<ForumProvider>().currentIndex);
+                                        BlocProvider.of<ForumCubit>(context)
+                                            .editTitle(
+                                                BlocProvider.of<ForumCubit>(
+                                                        context)
+                                                    .state
+                                                    .currentIndex,
+                                                tempTitle);
+                                        BlocProvider.of<ForumCubit>(context)
+                                            .editContent(
+                                                BlocProvider.of<ForumCubit>(
+                                                        context)
+                                                    .state
+                                                    .currentIndex,
+                                                tempContent);
+                                        BlocProvider.of<ForumCubit>(context)
+                                            .toggleIsEdited(
+                                                BlocProvider.of<ForumCubit>(
+                                                        context)
+                                                    .state
+                                                    .currentIndex);
+                                        BlocProvider.of<ForumCubit>(context)
+                                            .setEditedAt(
+                                                BlocProvider.of<ForumCubit>(
+                                                        context)
+                                                    .state
+                                                    .currentIndex);
                                         Navigator.pop(context);
-                                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomePage()), (route) => false);
+                                        Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    HomePage()),
+                                            (route) => false);
                                       },
                                       child: Text('확인'),
                                     ),

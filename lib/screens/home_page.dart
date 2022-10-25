@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:simple_forum/providers/forum_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../cubits/forum/forum_cubit.dart';
 import 'add_page.dart';
 import 'read_page.dart';
 
@@ -19,32 +19,29 @@ class HomePage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: ListView.separated(
-            itemCount: context.watch<ForumProvider>().articles.length,
+            itemCount: BlocProvider.of<ForumCubit>(context, listen: true).state.articles.length,
             itemBuilder: (context, index) {
-              int realIndex =
-                  context.read<ForumProvider>().articles.length - 1 - index;
+              int realIndex = BlocProvider.of<ForumCubit>(context).state.articles.length - 1 - index;
               return ListTile(
                 leading: Text('${realIndex + 1}'),
                 title: Text(
-                  context.watch<ForumProvider>().articles[realIndex].title,
+                  BlocProvider.of<ForumCubit>(context, listen: true).state.articles[realIndex].title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 onTap: () {
-                  context.read<ForumProvider>().changeCurrentIndex(realIndex);
+                  BlocProvider.of<ForumCubit>(context).changeCurrentIndex(realIndex);
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => ReadPage()));
                 },
-                subtitle: Text(context
-                        .read<ForumProvider>()
-                        .articles[realIndex]
-                        .isEdited
-                    ? '${context.read<ForumProvider>().articles[realIndex].editedAt}에 수정됨'
-                    : '${context.read<ForumProvider>().articles[realIndex].createdAt}에 생성됨'),
+                subtitle: Text(
+              BlocProvider.of<ForumCubit>(context).state.articles[realIndex].isEdited
+              ? '${BlocProvider.of<ForumCubit>(context).state.articles[realIndex].editedAt}에 수정됨'
+              : '${BlocProvider.of<ForumCubit>(context).state.articles[realIndex].createdAt}에 생성됨'),
               );
             },
             separatorBuilder: (BuildContext context, int index) {
-              if (index < context.read<ForumProvider>().articles.length - 1) {
+              if (index < BlocProvider.of<ForumCubit>(context).state.articles.length - 1) {
                 return Divider();
               } else {
                 return Container();

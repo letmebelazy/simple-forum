@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:simple_forum/providers/forum_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../cubits/forum/forum_cubit.dart';
 import 'edit_page.dart';
 import 'home_page.dart';
 
@@ -12,9 +12,8 @@ class ReadPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          context
-              .read<ForumProvider>()
-              .articles[context.read<ForumProvider>().currentIndex]
+          BlocProvider.of<ForumCubit>(context).state
+              .articles[BlocProvider.of<ForumCubit>(context).state.currentIndex]
               .title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -36,7 +35,7 @@ class ReadPage extends StatelessWidget {
                       actions: [
                         TextButton(
                           onPressed: () {
-                            context.read<ForumProvider>().deleteArticle(context.read<ForumProvider>().currentIndex);
+                            BlocProvider.of<ForumCubit>(context).deleteArticle(BlocProvider.of<ForumCubit>(context).state.currentIndex);
                             Navigator.pop(context);
                             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomePage()), (route) => false);
                           },
@@ -71,9 +70,8 @@ class ReadPage extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(left: 7.0, top: 3.0),
                 child: Text(
-                  context
-                      .read<ForumProvider>()
-                      .articles[context.read<ForumProvider>().currentIndex]
+                  BlocProvider.of<ForumCubit>(context).state
+                      .articles[BlocProvider.of<ForumCubit>(context).state.currentIndex]
                       .content,
                   style: TextStyle(
                     fontSize: 16.0,
